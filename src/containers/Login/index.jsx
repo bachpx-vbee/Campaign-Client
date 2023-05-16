@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useHistory } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,20 +12,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Copyright from "../../components/Copyright";
 import LoginStyle from "./index.style";
+import route from "../../constants/route";
 import backgroundImage from "../../assets/images/authbackground.jpg";
 
 const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
   };
-
-  const handleChangePage = (event) => {
-    const link = event.target.name;
-    event.preventDefault();
-    history.push(link);
-  };
-
-  const history = useHistory();
 
   return (
     <LoginStyle>
@@ -88,21 +80,15 @@ const Login = () => {
               <Grid container>
                 <Grid item xs>
                   <Link
-                    name="forgotpassword"
+                    name="forgot-password"
                     variant="body2"
-                    onClick={(event) => handleChangePage(event)}
-                    className="pointer"
+                    href={route.FORGOT_PASSWORD}
                   >
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link
-                    name="register"
-                    variant="body2"
-                    onClick={(event) => handleChangePage(event)}
-                    className="pointer"
-                  >
+                  <Link name="register" href={route.REGISTER} variant="body2">
                     Don't have an account? Sign up
                   </Link>
                 </Grid>
