@@ -2,7 +2,9 @@ const route = {
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register",
-  FORGOTPASSWORD: "/forgotpassword",
+  FORGOT_PASSWORD: "/forgot-password",
+  MYCAMPAIGN: "/my-campaign",
+  CAMPAIGN_DETAIL: "/campaign/:id"
 };
 
 export default route;
