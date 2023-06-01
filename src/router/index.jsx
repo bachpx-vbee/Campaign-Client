@@ -2,11 +2,13 @@ import React from "react";
 import { BrowserRouter, Switch } from "react-router-dom";
 import appRoutes from "./appRoutes";
 import PublicRoute from "./PublicRoute";
-
+import Navbar from "../components/Navbar";
 const AppRouter = () => {
   const publicRoutes = appRoutes.filter((route) => !route.isPrivate);
   return (
+    
     <BrowserRouter>
+    
       <Switch>
         {publicRoutes.map((publicRoute) => (
           <PublicRoute
@@ -18,6 +20,7 @@ const AppRouter = () => {
           />
         ))}
       </Switch>
+
     </BrowserRouter>
   );
 };
