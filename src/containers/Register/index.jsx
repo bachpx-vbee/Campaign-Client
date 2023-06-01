@@ -1,25 +1,106 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Typography,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
+import isEmail from "validator/lib/isEmail";
 import Copyright from "../../components/Copyright";
 import RegisterStyle from "./index.style";
-import backgroundImage from "../../assets/images/authbackground.jpg";
 import route from "../../constants/route";
+import api from "../../apis";
+import backgroundImage from "../../assets/images/authbackground.jpg";
 
 const Register = () => {
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState("");
+  const history = useHistory();
+
+  const renderCheckEmail = () => {
+    if (!isEmail(email)) return "Email is not valid";
+    return "";
+  };
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const checkInputValid = ({
+    email,
+    firstName,
+    lastName,
+    password,
+    cPassword,
+  }) => {
+    const input = [email, firstName, lastName, password, cPassword];
+    let isInputFilled = true;
+
+    input.forEach((value) => {
+      if (value === "") {
+        isInputFilled = false;
+      }
+    });
+
+    if (!isInputFilled) {
+      toast.warning("Please fill all the information");
+      return false;
+    }
+
+    if (!isEmail(email)) {
+      toast.error("Email is invalid");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      email: data.get("email"),
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
+      password: data.get("password"),
+      cPassword: data.get("cPassword"),
+    };
+
+    if (checkInputValid(payload)) {
+      if (payload.password !== payload.cPassword) {
+        toast.error("Password did not match");
+        return;
+      }
+
+      try {
+        delete payload.cPassword;
+        const result = await api.auth.register(payload);
+        if (!result?.status) {
+          toast.error("This email is already existed");
+          return;
+        }
+        toast.success("Register successfully");
+        setTimeout(() => {
+          history.push("/login");
+          window.location.reload();
+        }, 3000);
+      } catch (error) {
+        toast.error("Something is wrong");
+      }
+    }
+    return;
   };
 
   return (
     <RegisterStyle>
+      <ToastContainer theme="colored" />
       <Grid container component="main" className="grid-container">
         <CssBaseline />
         <Grid item xs={7}>
@@ -73,6 +154,9 @@ const Register = () => {
                     label="Email address"
                     name="email"
                     autoComplete="email"
+                    onChange={handleChangeEmail}
+                    error={email !== "" && !isEmail(email)}
+                    helperText={renderCheckEmail}
                   />
                 </Grid>
                 <Grid item xs={12}>
