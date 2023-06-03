@@ -8,7 +8,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CampaignDetail from './CampaignDetail';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from '@mui/material/Link';
+
 function CampaignCard({ movie }) {
 
     const handleOpenDetail = () => {
@@ -26,7 +27,7 @@ function CampaignCard({ movie }) {
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={() => handleOpenDetail()}>
-                    <Link underline="none" to={`/campaign/${movie.id}`}>More Details</Link>
+                    <Link underline="none" href={`/campaigns/${movie.id}`}>More Details</Link>
                 </Button>
             </CardActions>
 

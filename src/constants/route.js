@@ -4,7 +4,7 @@ const route = {
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
   MYCAMPAIGN: "/my-campaign",
-  CAMPAIGN_DETAIL: "/campaign/:id"
+  CAMPAIGN_DETAIL: "/campaigns/:id"
 };
 
 export default route;
