@@ -6,7 +6,9 @@ import PublicRoute from "./PublicRoute";
 const AppRouter = () => {
   const publicRoutes = appRoutes.filter((route) => !route.isPrivate);
   return (
+    
     <BrowserRouter>
+    
       <Switch>
         {publicRoutes.map((publicRoute) => (
           <PublicRoute
@@ -18,6 +20,7 @@ const AppRouter = () => {
           />
         ))}
       </Switch>
+
     </BrowserRouter>
   );
 };
