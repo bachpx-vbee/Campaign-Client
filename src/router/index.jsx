@@ -5,8 +5,8 @@ import PublicRoute from "./PublicRoute";
 
 const AppRouter = () => {
   const publicRoutes = appRoutes.filter((route) => !route.isPrivate);
-  return (
-    <BrowserRouter>
+  return (    
+    <BrowserRouter>   
       <Switch>
         {publicRoutes.map((publicRoute) => (
           <PublicRoute

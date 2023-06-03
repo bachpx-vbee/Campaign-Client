@@ -82,13 +82,13 @@ const Login = () => {
                   <Link
                     name="forgot-password"
                     variant="body2"
-                    href={route.FORGOT_PASSWORD}
+                    href={route.FORGOT_PASSWORD}              
                   >
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link name="register" href={route.REGISTER} variant="body2">
+                <Link name="register" href={route.REGISTER} variant="body2">
                     Don't have an account? Sign up
                   </Link>
                 </Grid>
