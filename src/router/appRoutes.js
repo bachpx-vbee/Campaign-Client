@@ -3,6 +3,7 @@ import Register from "../pages/Register";
 import Home from "../pages/Home";
 
 import CampaignDetail from "../components/CampaignDetail";
+import ForgotPassword from "../pages/ForgotPassword";
 import routes from "../constants/route";
 
 const allRoutes = [
@@ -23,6 +24,13 @@ const allRoutes = [
   {
     path: routes.HOME,
     component: Home,
+    exact: true,
+    restricted: true,
+    isPrivate: false,
+  },
+  {
+    path: routes.FORGOT_PASSWORD,
+    component: ForgotPassword,
     exact: true,
     restricted: true,
     isPrivate: false,
