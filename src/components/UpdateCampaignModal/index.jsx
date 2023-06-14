@@ -1,20 +1,20 @@
-import React from 'react'
-import Button from '@mui/material/Button';
-import { useState } from 'react'
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import Stack from '@mui/material/Stack';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import AddIcon from '@mui/icons-material/Add';
-import Typography from '@mui/material/Typography';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import React, { useState } from 'react'
+import {
+    Button,
+    TextField,
+    Dialog,
+    Stack,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    InputLabel,
+    MenuItem,
+    Typography,
+    Select
+} from '@mui/material';
+import { Add, DeleteForever } from '@mui/icons-material';
+
 function UpdateCampaignModel({ openUpdate, setOpenUpdate }) {
     const [form, setForm] = useState({
         name: '',
@@ -131,7 +131,7 @@ function UpdateCampaignModel({ openUpdate, setOpenUpdate }) {
                         </DialogContent>
                         <div sx={{}}>
                             <Button sx={{ width: '10%', paddingTop: 3 }} onClick={() => setDeleteAlert(true)}>
-                                <DeleteForeverIcon />
+                                <DeleteForever />
                             </Button>
                             <Dialog
                                 open={deleteAlert}
@@ -153,7 +153,7 @@ function UpdateCampaignModel({ openUpdate, setOpenUpdate }) {
                 ))}
 
                 <Button onClick={() => handleAddFields()}>
-                    <AddIcon />
+                    <Add />
                     Add new member
                 </Button>
                 <DialogActions>
