@@ -2,7 +2,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import routes from "../constants/route";
-
+import Home from "../pages/Home";
 const allRoutes = [
   {
     path: routes.LOGIN,
@@ -25,6 +25,13 @@ const allRoutes = [
     restricted: true,
     isPrivate: false,
   },
+  {
+    path: '/',
+    component: Home,
+    exact: true,
+    restricted: true,
+    isPrivate: true,
+  }
 ];
 
 export default allRoutes;
