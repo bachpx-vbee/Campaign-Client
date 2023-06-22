@@ -1,7 +1,28 @@
 import React from "react";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { BrowserRouter, Switch, Redirect } from "react-router-dom";
 import appRoutes from "./appRoutes";
 import PublicRoute from "./PublicRoute";
+import PrivateRoute from "./PrivateRoute";
+import Layout from "../containers/Layout";
+import ROUTE from "../constants/route";
+
+const PrivateApp = () => {
+  const privateRoutes = appRoutes.filter((route) => route.isPrivate);
+  return (
+    <Layout>
+      <Switch>
+        {privateRoutes.map((privateRoute) => (
+          <PrivateRoute
+            path={privateRoute.path}
+            component={privateRoute.component}
+            exact
+            key={privateRoute.path}
+          />
+        ))}
+      </Switch>
+    </Layout>
+  );
+};
 
 const AppRouter = () => {
   const publicRoutes = appRoutes.filter((route) => !route.isPrivate);
@@ -17,6 +38,7 @@ const AppRouter = () => {
             key={publicRoute.path}
           />
         ))}
+        <PrivateRoute component={PrivateApp} />
       </Switch>
     </BrowserRouter>
   );
