@@ -1,27 +1,87 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Copyright from '../../components/Copyright';
-import LoginStyle from './index.style';
-import route from '../../constants/route';
-import backgroundImage from '../../assets/images/authbackground.jpg';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Box,
+  Grid,
+  Typography,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Copyright from "../../components/Copyright";
+import LoginStyle from "./index.style";
+import route from "../../constants/route";
+import backgroundImage from "../../assets/images/authbackground.jpg";
+import api from "../../apis";
+import isEmail from "validator/lib/isEmail";
+import action from "../../redux/actions";
 
 const Login = () => {
-  const handleSubmit = (event) => {
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState("");
+
+  const renderCheckEmail = () => {
+    if (!isEmail(email)) return "Email is not valid";
+    return "";
+  };
+
+  const handleChangeEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const checkInputValid = ({ email, password }) => {
+    if (email === "" || password === "") {
+      toast.warning("Please fill in all the box");
+      return false;
+    }
+
+    if (!isEmail(email)) {
+      toast.warning("Email is not valid");
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const payload = {
+      email: data.get("email"),
+      password: data.get("password"),
+    };
+    if (checkInputValid(payload)) {
+      try {
+        const result = await api.auth.login(payload);
+        dispatch(action.auth.login(result.result));
+        if (!result?.status) {
+          toast.error("Wrong email or password");
+          return;
+        }
+        toast.info("Login success");
+        setTimeout(() => {
+          history.push("/");
+          window.location.reload();
+        }, 3000);
+      } catch (error) {
+        toast.error("Something is wrong");
+      }
+    }
   };
 
   return (
     <LoginStyle>
+      <ToastContainer theme="colored" />
       <Grid container component="main" className="grid-container">
         <CssBaseline />
         <Grid item xs={7}>
@@ -54,6 +114,9 @@ const Login = () => {
                 autoComplete="email"
                 autoFocus
                 className="text-field"
+                onChange={handleChangeEmail}
+                error={email !== "" && !isEmail(email)}
+                helperText={renderCheckEmail}
               />
               <TextField
                 required
