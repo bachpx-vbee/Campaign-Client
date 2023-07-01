@@ -1,6 +1,7 @@
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
+import RoleManagement from "../pages/RoleManagement";
 import routes from "../constants/route";
 
 const allRoutes = [
@@ -24,6 +25,13 @@ const allRoutes = [
     exact: true,
     restricted: true,
     isPrivate: false,
+  },
+  {
+    path: routes.ROLE_MANAGEMENT,
+    component: RoleManagement,
+    exact: true,
+    restricted: true,
+    isPrivate: true,
   },
 ];
 
