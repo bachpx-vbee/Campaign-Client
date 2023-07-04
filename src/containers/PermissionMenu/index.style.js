@@ -10,25 +10,6 @@ export default styled.div`
   .text-center {
     text-align: center;
   }
-  .delete-icon {
-    color: red;
-    margin-left: 2%;
-  }
-  .icon {
-    border-radius: 30%;
-    cursor: pointer;
-  }
-  .icon:hover {
-    background-color: whitesmoke;
-  }
-  .api-chip {
-    background-color: #4caf50;
-    color: white;
-  }
-  .menu-chip {
-    background-color: #ff9800;
-    color: white;
-  }
   .add-button {
     width: 96.3vw;
     display: flex;
