@@ -1,22 +1,12 @@
 import React, { useState } from "react";
-import {
-  TableContainer,
-  Paper,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TablePagination,
-  Button,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import DataTable from "../../components/DataTable";
 import PermissionMenuStyle from "./index.style";
+import PermissionDrawer from "../../components/PermissionDrawer";
+import DeleteAlert from "../../components/DeleteAlert";
 
-const permission = [
+const permissions = [
   {
     name: "Role management",
     url: "/role-management",
@@ -43,80 +33,72 @@ const permission = [
   },
 ];
 
+const columns = ["Tên quyền", "Đường dẫn", "Phương thức", "Loại", "Hành động"];
+
 const PermissionMenu = () => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerTitle, setDrawerTitle] = useState("");
+  const [permissionRow, setPermissionRow] = useState(null);
+  const [deleteAlert, setDeleteAlert] = useState(false);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleAddPermission = () => {
+    setPermissionRow(null);
+    setDrawerTitle("Add permission");
+    setIsDrawerOpen(true);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleClosePermission = () => {
+    setPermissionRow(null);
+    setIsDrawerOpen(false);
   };
+
+  const handleUpdatePermission = (row) => {
+    setPermissionRow(row);
+    setDrawerTitle("Update permission");
+    setIsDrawerOpen(true);
+  };
+
+  const handleOpenDeleteAlert = () => {
+    setDeleteAlert(true);
+  };
+
+  const handleCloseDeleteAlert = () => {
+    setDeleteAlert(false);
+  };
+
+  const ActionButton = ({ row }) => (
+    <>
+      <EditIcon className="icon" onClick={() => handleUpdatePermission(row)} />
+      <DeleteIcon
+        className="delete-icon icon"
+        onClick={handleOpenDeleteAlert}
+      />
+    </>
+  );
+
+  const permissionWithActions = permissions.map((permisson) => ({
+    ...permisson,
+    action: <ActionButton row={permisson} />,
+  }));
 
   return (
-    <PermissionMenuStyle>
-      <div className="add-button">
-        <Button variant="contained">Tạo quyền</Button>
-      </div>
-      <TableContainer className="table" component={Paper}>
-        <Table>
-          <TableHead>
-            <TableCell className="bold-text uppercase">Tên quyền</TableCell>
-            <TableCell className="bold-text uppercase">Đường dẫn</TableCell>
-            <TableCell width="12%" className="bold-text uppercase text-center">
-              Phương thức
-            </TableCell>
-            <TableCell width="10%" className="bold-text uppercase text-center">
-              Loại
-            </TableCell>
-            <TableCell width="10%" className="bold-text uppercase text-center">
-              Hành động
-            </TableCell>
-          </TableHead>
-          <TableBody>
-            {permission
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow key={row.name}>
-                  <TableCell>
-                    <Typography className="bold-text">{row.name}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography>{row.url}</Typography>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Typography>{row.method}</Typography>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {row.type === "API" ? (
-                      <Chip label="API" className="api-chip" />
-                    ) : (
-                      <Chip label="MENU" className="menu-chip" />
-                    )}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <EditIcon className="icon" />
-                    <DeleteIcon className="delete-icon icon" />
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter>
-            <TablePagination
-              rowsPerPageOptions={[5, 10]}
-              count={permission.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </PermissionMenuStyle>
+    <>
+      <DeleteAlert open={deleteAlert} onClose={handleCloseDeleteAlert} />
+      <PermissionDrawer
+        title={drawerTitle}
+        open={isDrawerOpen}
+        onClose={handleClosePermission}
+        value={permissionRow}
+      />
+      <PermissionMenuStyle>
+        <div className="add-button">
+          <Button variant="contained" onClick={handleAddPermission}>
+            Tạo quyền
+          </Button>
+        </div>
+        <DataTable columns={columns} data={permissionWithActions} />
+      </PermissionMenuStyle>
+    </>
   );
 };
 

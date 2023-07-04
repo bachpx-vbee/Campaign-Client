@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import CampaignCard from "../../components/CampaignCard";
+// import CampaignCard from "../../components/CampaignCard";
 import { campaignList } from "../../constants/dataTest";
 const App = () => {
   return (
