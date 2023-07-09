@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button } from "@mui/material";
 import AdminMenuStyle from "./index.style";
 import DataTable from "../../components/DataTable";
+import AdminDrawer from "../../components/AdminDrawer";
+import DeleteAlert from "../../components/DeleteAlert";
 
 const admin = [
   {
@@ -24,12 +26,40 @@ const admin = [
 const columns = ["ID", "Email", "Phân quyền", "Hành động"];
 
 const AdminMenu = () => {
+  const [adminDrawer, setAdminDrawer] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
+
+  const handleAddAdminDrawer = () => {
+    setAdminDrawer(true);
+  };
+
+  const handleCloseAdminDrawer = () => {
+    setAdminDrawer(false);
+  };
+
+  const handleOpenDeleteAlert = () => {
+    setDeleteAlert(true);
+  };
+
+  const handleCloseDeleteAlert = () => {
+    setDeleteAlert(false);
+  };
+
   return (
     <AdminMenuStyle>
+      <DeleteAlert open={deleteAlert} onClose={handleCloseDeleteAlert} />
+      <AdminDrawer open={adminDrawer} onClose={handleCloseAdminDrawer} />
       <div className="add-button">
-        <Button variant="contained">Thêm admin</Button>
+        <Button variant="contained" onClick={handleAddAdminDrawer}>
+          Thêm admin
+        </Button>
       </div>
-      <DataTable columns={columns} data={admin} deleteIcon />
+      <DataTable
+        columns={columns}
+        data={admin}
+        deleteIcon
+        deleteRow={handleOpenDeleteAlert}
+      />
     </AdminMenuStyle>
   );
 };
