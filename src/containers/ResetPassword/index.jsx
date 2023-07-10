@@ -1,89 +1,66 @@
-import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React from "react";
+import { useHistory } from "react-router-dom";
 import {
   Avatar,
   Button,
   CssBaseline,
-  TextField,
   Link,
   Box,
   Grid,
   Typography,
+  TextField,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import isEmail from "validator/lib/isEmail";
-import { setCookie } from "../../utils/cookie";
-import { HALF_HOUR } from "../../constants";
+import { ToastContainer, toast } from "react-toastify";
 import Copyright from "../../components/Copyright";
-import ForgotPasswordStyle from "./index.style";
+import ResetPasswordStyle from "./index.style";
 import backgroundImage from "../../assets/images/authbackground.jpg";
 import route from "../../constants/route";
 import api from "../../apis";
 
-const Forgot = () => {
-  const [email, setEmail] = useState("");
-  const [lastRequestTime, setLastRequestTime] = useState(null);
-
-  const renderCheckEmail = () => {
-    if (!isEmail(email)) return "Email is not valid";
-    return "";
-  };
-
-  const handleChangeEmail = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const checkInputValid = ({ email }) => {
-    if (email === "") {
-      toast.warning("Please fill in all the boxes");
+const Reset = ({ token }) => {
+  const history = useHistory();
+  const checkInputValid = ({ password, cPassword }) => {
+    if (password === "" || cPassword === "") {
+      toast.warning("Please fill in all the box");
       return false;
     }
 
-    if (!isEmail(email)) {
-      toast.warning("Email is not valid");
+    if (password !== cPassword) {
+      toast.error("Password did not match");
       return false;
     }
-
     return true;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const now = Date.now();
-    if (lastRequestTime && now - lastRequestTime < 10000) {
-      toast.warning("Please wait before making another request");
-      return;
-    }
-
-    setLastRequestTime(now);
-
     const data = new FormData(event.currentTarget);
     const payload = {
-      email: data.get("email"),
+      password: data.get("newpassword"),
+      cPassword: data.get("confirmpassword"),
     };
-
     if (checkInputValid(payload)) {
       try {
-        const result = await api.auth.forgotPassword(payload);
-
+        delete payload.cPassword;
+        const result = await api.auth.resetPassword(token, payload);
         if (!result?.status) {
-          toast.error("User not found");
+          toast.error("Time out");
           return;
         }
-
-        setCookie("forgotPasswordToken", result.result.token, HALF_HOUR);
-        toast.info("Please check your email");
-
-        // Update the last request time
+        toast.success("Password update successfully");
+        setTimeout(() => {
+          history.push("/login");
+          window.location.reload();
+        }, 1500);
       } catch (error) {
-        toast.error("Something went wrong");
+        toast.error("Something is wrong");
       }
     }
   };
 
   return (
-    <ForgotPasswordStyle>
+    <ResetPasswordStyle>
       <ToastContainer theme="colored" />
       <Grid container component="main" className="grid-container">
         <CssBaseline />
@@ -100,7 +77,7 @@ const Forgot = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Forgot password
+              Reset password
             </Typography>
             <Box
               component="form"
@@ -112,14 +89,20 @@ const Forgot = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="newpassword"
+                label="New password"
+                name="newpassword"
+                type="password"
                 autoFocus
-                onChange={handleChangeEmail}
-                error={email !== "" && !isEmail(email)}
-                helperText={renderCheckEmail}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="confirmpassword"
+                label="Confirm password"
+                name="confirmpassword"
+                type="password"
               />
               <Button
                 type="submit"
@@ -141,8 +124,8 @@ const Forgot = () => {
           </Box>
         </Grid>
       </Grid>
-    </ForgotPasswordStyle>
+    </ResetPasswordStyle>
   );
 };
 
-export default Forgot;
+export default Reset;
