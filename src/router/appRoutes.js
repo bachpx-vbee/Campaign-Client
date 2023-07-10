@@ -3,6 +3,7 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import RoleManagement from "../pages/RoleManagement";
 import Home from "../pages/Home";
+import ResetPassword from "../pages/ResetPassword";
 import routes from "../constants/route";
 
 const allRoutes = [
@@ -40,7 +41,14 @@ const allRoutes = [
     exact: true,
     restricted: true,
     isPrivate: true,
-  }
+  },
+  {
+    path: routes.RESET_PASSWORD,
+    component: ResetPassword,
+    exact: true,
+    restricted: true,
+    isPrivate: false,
+  },
 ];
 
 export default allRoutes;
