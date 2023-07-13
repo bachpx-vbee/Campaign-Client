@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import DataTable from "../../components/DataTable";
 import PermissionMenuStyle from "./index.style";
 import PermissionDrawer from "./PermissionDrawer";
 import DeleteAlert from "../../components/DeleteAlert";
+import api from "../../apis";
 
 const permissions = [
   {
@@ -40,12 +41,34 @@ const PermissionMenu = () => {
   const [drawerTitle, setDrawerTitle] = useState("");
   const [permissionRow, setPermissionRow] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const [numOfPages, setNumOfPages] = useState(0);
+  const [page, setPage] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [permissionList, setPermissionList] = useState([]);
 
   const handleAddPermission = () => {
     setPermissionRow(null);
     setDrawerTitle("Add permission");
     setIsDrawerOpen(true);
   };
+
+  const getPermission = async () => {
+    const payload = {
+      offset: offset,
+    };
+    const checkresult = await api.permission.getPermission(payload);
+    setNumOfPages(Math.ceil(checkresult.result.permissions.total / 10));
+    setPermissionList(checkresult.result.permissions.documents);
+  };
+
+  const pageChange = (number) => {
+    setPage(number);
+    setOffset((number - 1) * 10);
+  };
+
+  useEffect(() => {
+    getPermission();
+  }, [offset]);
 
   const handleClosePermission = () => {
     setPermissionRow(null);
@@ -76,9 +99,12 @@ const PermissionMenu = () => {
     </>
   );
 
-  const permissionWithActions = permissions.map((permisson) => ({
-    ...permisson,
-    actions: <ActionButton row={permisson} />,
+  const permissionWithActions = permissionList.map((permission) => ({
+    name: permission.name,
+    url: permission.url,
+    type: permission.type,
+    method: permission.method,
+    actions: <ActionButton row={permission} />,
   }));
 
   return (
@@ -96,7 +122,12 @@ const PermissionMenu = () => {
             Tạo quyền
           </Button>
         </div>
-        <DataTable columns={columns} data={permissionWithActions} />
+        <DataTable
+          columns={columns}
+          data={permissionWithActions}
+          numPage={numOfPages}
+          changePage={pageChange}
+        />
       </PermissionMenuStyle>
     </>
   );

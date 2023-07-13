@@ -6,25 +6,13 @@ import {
   TableBody,
   TableRow,
   TableFooter,
-  TablePagination,
+  Pagination,
   Paper,
 } from "@mui/material";
 import DataTableStyle from "./index.style";
 
 const DataTable = (props) => {
-  const { columns, data } = props;
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const { columns, data, numPage, changePage } = props;
 
   return (
     <DataTableStyle className="table" component={Paper}>
@@ -35,24 +23,23 @@ const DataTable = (props) => {
           ))}
         </TableHead>
         <TableBody>
-          {data
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row) => (
-              <TableRow key={row.name}>
-                {Object.keys(row).map((key) => (
-                  <TableCell>{row[key]}</TableCell>
-                ))}
-              </TableRow>
-            ))}
+          {data.map((row) => (
+            <TableRow key={row.name}>
+              {Object.keys(row).map((key) => (
+                <TableCell>{row[key]}</TableCell>
+              ))}
+            </TableRow>
+          ))}
         </TableBody>
         <TableFooter>
-          <TablePagination
-            rowsPerPageOptions={[5, 10]}
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+          <Pagination
+            className="pagination"
+            size="large"
+            count={numPage}
+            color="primary"
+            onClick={(event, page) => {
+              changePage(parseInt(event.target.textContent));
+            }}
           />
         </TableFooter>
       </Table>
