@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Drawer } from "@mui/material";
 
-const PermissionDrawerStyle = styled(Drawer)`
+const AdminDrawerStyle = styled(Drawer)`
   && {
     .drawer {
       width: 25vw;
@@ -26,4 +26,4 @@ const PermissionDrawerStyle = styled(Drawer)`
   }
 `;
 
-export default PermissionDrawerStyle;
+export default AdminDrawerStyle;

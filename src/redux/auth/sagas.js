@@ -8,7 +8,6 @@ import actions from "../actions";
 
 function* loginSaga(data) {
   try {
-    axiosClient.defaults.headers.common.Authorization = `Bearer ${data.data.accessToken}`;
     setCookie("accessToken", data.data.accessToken, A_WEEK);
     setCookie("refreshToken", data.data.refreshToken, A_WEEK);
     yield put(actions.auth.loginSuccess(data.data.accessToken));
