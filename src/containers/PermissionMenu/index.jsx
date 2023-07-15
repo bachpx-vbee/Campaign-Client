@@ -1,37 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import DataTable from "../../components/DataTable";
 import PermissionMenuStyle from "./index.style";
 import PermissionDrawer from "./PermissionDrawer";
 import DeleteAlert from "../../components/DeleteAlert";
-
-const permissions = [
-  {
-    name: "Role management",
-    url: "/role-management",
-    method: "GET",
-    type: "MENU",
-  },
-  {
-    name: "Get permission",
-    url: "/api/v1/get-all-permission",
-    method: "GET",
-    type: "API",
-  },
-  {
-    name: "Add permission",
-    url: "/api/v1/add-permission",
-    method: "POST",
-    type: "API",
-  },
-  {
-    name: "Delete permission",
-    url: "/api/v1/delete-permission/:permissionId",
-    method: "DELETE",
-    type: "API",
-  },
-];
+import api from "../../apis";
 
 const columns = ["Tên quyền", "Đường dẫn", "Phương thức", "Loại", "Hành động"];
 
@@ -40,12 +14,37 @@ const PermissionMenu = () => {
   const [drawerTitle, setDrawerTitle] = useState("");
   const [permissionRow, setPermissionRow] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const [numOfPages, setNumOfPages] = useState(0);
+  const [page, setPage] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [permissionList, setPermissionList] = useState([]);
+
+  const limit = 5;
 
   const handleAddPermission = () => {
     setPermissionRow(null);
     setDrawerTitle("Add permission");
     setIsDrawerOpen(true);
   };
+
+  const getPermission = async () => {
+    const payload = {
+      offset: offset,
+      limit,
+    };
+    const checkresult = await api.permission.getPermission(payload);
+    setNumOfPages(Math.ceil(checkresult.result.permissions.total / limit));
+    setPermissionList(checkresult.result.permissions.documents);
+  };
+
+  const pageChange = (number) => {
+    setPage(number);
+    setOffset((number - 1) * limit);
+  };
+
+  useEffect(() => {
+    getPermission();
+  }, [offset]);
 
   const handleClosePermission = () => {
     setPermissionRow(null);
@@ -76,9 +75,13 @@ const PermissionMenu = () => {
     </>
   );
 
-  const permissionWithActions = permissions.map((permisson) => ({
-    ...permisson,
-    actions: <ActionButton row={permisson} />,
+  const permissionWithActions = permissionList.map((permission) => ({
+    id: permission.id,
+    name: permission.name,
+    url: permission.url,
+    type: permission.type,
+    method: permission.method,
+    actions: <ActionButton row={permission} />,
   }));
 
   return (
@@ -96,7 +99,12 @@ const PermissionMenu = () => {
             Tạo quyền
           </Button>
         </div>
-        <DataTable columns={columns} data={permissionWithActions} />
+        <DataTable
+          columns={columns}
+          data={permissionWithActions}
+          numPage={numOfPages}
+          changePage={pageChange}
+        />
       </PermissionMenuStyle>
     </>
   );

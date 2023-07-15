@@ -6,24 +6,18 @@ import {
   TableBody,
   TableRow,
   TableFooter,
-  TablePagination,
+  Pagination,
   Paper,
 } from "@mui/material";
 import DataTableStyle from "./index.style";
 
 const DataTable = (props) => {
-  const { columns, data } = props;
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const { columns, data, numPage, changePage, isShowId } = props;
+  const [page, setPage] = useState(1);
+  const handlePageChange = (event, page) => {
+    console.log(page);
+    setPage(page);
+    changePage(page);
   };
 
   return (
@@ -35,27 +29,27 @@ const DataTable = (props) => {
           ))}
         </TableHead>
         <TableBody>
-          {data
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((row) => (
-              <TableRow key={row.name}>
-                {Object.keys(row).map((key) => (
+          {data.map((row) => (
+            <TableRow key={row.name}>
+              {Object.keys(row).map((key) =>
+                key !== "id" || isShowId ? (
                   <TableCell>{row[key]}</TableCell>
-                ))}
-              </TableRow>
-            ))}
+                ) : null
+              )}
+            </TableRow>
+          ))}
         </TableBody>
-        <TableFooter>
-          <TablePagination
-            rowsPerPageOptions={[5, 10]}
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </TableFooter>
       </Table>
+      <TableFooter></TableFooter>
+      <Pagination
+        className="pagination"
+        size="large"
+        variant="outlined"
+        count={numPage}
+        color="primary"
+        page={page}
+        onChange={handlePageChange}
+      />
     </DataTableStyle>
   );
 };
